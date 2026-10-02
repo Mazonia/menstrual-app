@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow the test_connection collection to be read/written by anyone
+    // This is just for testing purposes
+    match /test_connection/{documentId} {
+      allow read, write: if true;
+    }
+    
+    // Allow users to read and write only their own data
+    match /users/{userId} {
+      // Allow creation of user profiles
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+      
+      // Allow users to access their own period data
+      match /periods/{periodId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // Allow users to access their own settings
+      match /settings/{settingId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+} 

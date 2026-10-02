@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "264217952252",
+    "project_id": "menstralapp",
+    "storage_bucket": "menstralapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264217952252:android:07c2c349c8202ef85abc79",
+        "android_client_info": {
+          "package_name": "com.example.menstralapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "YOUR_GOOGLE_API_KEY_HERE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

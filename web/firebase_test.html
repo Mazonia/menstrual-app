@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Database Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-top: 40px;
+    }
+    h1 {
+      color: #e91e63;
+      text-align: center;
+    }
+    #status {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .success {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+    .error {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+    .loading {
+      background-color: #e3f2fd;
+      color: #1565c0;
+    }
+    button {
+      background-color: #e91e63;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      display: block;
+      margin: 20px auto;
+    }
+    button:hover {
+      background-color: #c2185b;
+    }
+    .log {
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-top: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Firebase Database Test</h1>
+    <div id="status" class="loading">Initializing Firebase...</div>
+    <button id="testButton" disabled>Run Test Again</button>
+    <div id="log" class="log"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "YOUR_GOOGLE_API_KEY_HERE",
+      authDomain: "menstralapp.firebaseapp.com",
+      projectId: "menstralapp",
+      storageBucket: "menstralapp.firebasestorage.app",
+      messagingSenderId: "264217952252",
+      appId: "1:264217952252:web:07c2c349c8202ef85abc79"
+    };
+
+    // Log function
+    function log(message) {
+      const logElement = document.getElementById('log');
+      const entry = document.createElement('div');
+      entry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+      logElement.appendChild(entry);
+      logElement.scrollTop = logElement.scrollHeight;
+      console.log(message);
+    }
+
+    // Set status
+    function setStatus(message, type) {
+      const statusElement = document.getElementById('status');
+      statusElement.textContent = message;
+      statusElement.className = type;
+    }
+
+    // Test Firebase connection
+    async function testFirebaseConnection() {
+      const statusElement = document.getElementById('status');
+      const testButton = document.getElementById('testButton');
+      
+      try {
+        // Reset status
+        setStatus('Testing Firebase connection...', 'loading');
+        testButton.disabled = true;
+        
+        log('Initializing Firebase');
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        log('Getting Firestore instance');
+        // Get Firestore instance
+        const db = firebase.firestore();
+        
+        log('Writing test document');
+        // Write test document
+        await db.collection('test_connection').doc('test_doc').set({
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          message: 'Test connection successful'
+        });
+        
+        log('Reading test document');
+        // Read test document
+        const docRef = await db.collection('test_connection').doc('test_doc').get();
+        
+        if (docRef.exists) {
+          log('Document exists: ' + JSON.stringify(docRef.data()));
+          
+          log('Deleting test document');
+          // Delete test document
+          await db.collection('test_connection').doc('test_doc').delete();
+          
+          log('Test successful');
+          setStatus('Firebase database connection successful! ✅', 'success');
+        } else {
+          log('Document does not exist');
+          setStatus('Error: Document created but not found', 'error');
+        }
+      } catch (error) {
+        log('Error: ' + error.message);
+        setStatus('Error connecting to Firebase: ' + error.message, 'error');
+      } finally {
+        testButton.disabled = false;
+      }
+    }
+
+    // Set up event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      const testButton = document.getElementById('testButton');
+      testButton.addEventListener('click', testFirebaseConnection);
+      testButton.disabled = false;
+      
+      // Run the test automatically on page load
+      testFirebaseConnection();
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraCare | Smart Menstrual & Reproductive Health Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f111a;
+            --panel-bg: rgba(26, 20, 35, 0.75);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-pink: #ec4899;
+            --accent-rose: #f43f5e;
+            --accent-purple: #a855f7;
+            --accent-cyan: #06b6d4;
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            max-width: 1100px;
+            margin: 0 auto 2.5rem auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 2rem;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            backdrop-filter: blur(16px);
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f43f5e 0%, #ec4899 50%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .cycle-wheel {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            border: 8px solid var(--accent-pink);
+            margin: 1.5rem auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.3);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .cycle-day { font-size: 2.5rem; font-weight: 800; color: #fff; line-height: 1; }
+        .cycle-phase { font-size: 0.85rem; font-weight: 700; color: var(--accent-pink); text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .form-group { margin-bottom: 1.25rem; }
+        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(15, 17, 26, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: #fff;
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.85rem;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #f43f5e, #ec4899);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover { opacity: 0.95; transform: translateY(-1px); }
+
+        .symptom-tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .symptom-tag.active {
+            background: var(--accent-pink);
+            color: #fff;
+            border-color: var(--accent-pink);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="brand">🌸 AuraCare Cycle Tracker</div>
+        <div style="font-size:0.9rem; color:var(--text-muted);">Privacy-First Health Companion</div>
+    </div>
+
+    <div class="container">
+        <!-- Cycle Status & Wheel -->
+        <div class="card" style="text-align:center;">
+            <h2 style="font-size:1.4rem; color:#fff;">Cycle Status</h2>
+            <p style="color:var(--text-muted); font-size:0.9rem;">Estimated Current Cycle Day</p>
+
+            <div class="cycle-wheel">
+                <div class="cycle-day" id="day-display">Day 14</div>
+                <div class="cycle-phase" id="phase-display">Ovulation Phase</div>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.04); border-radius:12px; padding:1rem; margin-top:1.5rem; text-align:left;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; font-size:0.9rem;">
+                    <span>Next Period Expected:</span>
+                    <strong id="next-period-date" style="color:var(--accent-pink);">In 14 Days</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
+                    <span>Fertile Window:</span>
+                    <strong id="fertile-window-date" style="color:var(--accent-purple);">High Chance</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Log & Predictor Form -->
+        <div class="card">
+            <h2 style="font-size:1.4rem; color:#fff; margin-bottom:1.25rem;">📝 Cycle Predictor & Logger</h2>
+
+            <div class="form-group">
+                <label>First Day of Last Period</label>
+                <input type="date" id="last-period-date" onchange="calculateCycle()">
+            </div>
+
+            <div class="form-group">
+                <label>Average Cycle Length (Days)</label>
+                <input type="number" id="cycle-length" value="28" min="20" max="45" onchange="calculateCycle()">
+            </div>
+
+            <div class="form-group">
+                <label>Today's Symptoms & Mood</label>
+                <div>
+                    <span class="symptom-tag" onclick="toggleSymptom(this)">😊 Happy</span>
+                    <span class="symptom-tag" onclick="toggleSymptom(this)">⚡ High Energy</span>
+                    <span class="symptom-tag" onclick="toggleSymptom(this)">🤕 Mild Cramps</span>
+                    <span class="symptom-tag" onclick="toggleSymptom(this)">😴 Tired</span>
+                    <span class="symptom-tag" onclick="toggleSymptom(this)">💧 Light Flow</span>
+                </div>
+            </div>
+
+            <button class="btn" onclick="saveLog()">Save Daily Log</button>
+        </div>
+    </div>
+
+    <script>
+        // Set default last period date to 14 days ago
+        const defaultDate = new Date();
+        defaultDate.setDate(defaultDate.getDate() - 14);
+        document.getElementById('last-period-date').valueAsDate = defaultDate;
+
+        function calculateCycle() {
+            const inputVal = document.getElementById('last-period-date').value;
+            const cycleLen = parseInt(document.getElementById('cycle-length').value) || 28;
+
+            if (!inputVal) return;
+
+            const lastPeriod = new Date(inputVal);
+            const today = new Date();
+            const diffTime = Math.abs(today - lastPeriod);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) % cycleLen + 1;
+
+            document.getElementById('day-display').innerText = `Day ${diffDays}`;
+
+            let phase = "Follicular Phase";
+            if (diffDays <= 5) phase = "Menstrual Phase";
+            else if (diffDays >= 12 && diffDays <= 16) phase = "Ovulation Phase";
+            else if (diffDays > 16) phase = "Luteal Phase";
+
+            document.getElementById('phase-display').innerText = phase;
+
+            const nextPeriod = new Date(lastPeriod);
+            nextPeriod.setDate(nextPeriod.getDate() + cycleLen);
+            const daysToNext = Math.ceil((nextPeriod - today) / (1000 * 60 * 60 * 24));
+
+            document.getElementById('next-period-date').innerText = `In ${daysToNext > 0 ? daysToNext : 0} Days`;
+        }
+
+        function toggleSymptom(el) {
+            el.classList.toggle('active');
+        }
+
+        function saveLog() {
+            alert("Daily health log saved successfully!");
+        }
+
+        calculateCycle();
+    </script>
+</body>
+</html>
